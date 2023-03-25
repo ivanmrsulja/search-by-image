@@ -1,41 +1,31 @@
-import base64
-from model import *
+from model import RawImage, ProcessedImageData
+from handlers import handle_image_processing_request
 from fastapi import FastAPI
-from processing_service import *
+from processing_service import build_model
 from contextlib import asynccontextmanager
 
 
-ml_models = {}
+ML_MODELS = {}
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    global ML_MODELS
+
     # On startup
-    ml_models["yolo_v5"] = build_model()
+    ML_MODELS["yolo_v5"] = build_model()
     yield
 
     # Graceful shutdown
-    ml_models.clear()
+    ML_MODELS.clear()
 
 
 app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/preprocess")
-async def test(image: RawImage) -> ProcessedImage:
-    class_list = load_classes()
-    net = ml_models["yolo_v5"]
-    image = load_image(image.b64_image)
+async def test(image: RawImage) -> ProcessedImageData:
+    global ML_MODELS
 
-    input_image = format_yolov5(image)
-    outs = detect(input_image, net)
-
-    class_ids, confidences, boxes = wrap_detection(input_image, outs[0])
-
-    classes = []
-    for classid in class_ids:
-        classes.append(class_list[classid])
-
-    hue, saturation = get_dominant_hue_and_saturation(image)
-
-    return ProcessedImage(classes=classes, hsv_color_space=(hue, saturation))
+    return handle_image_processing_request(image, ML_MODELS["yolo_v5"])
+    

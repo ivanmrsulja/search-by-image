@@ -1,6 +1,4 @@
 import cv2
-import time
-import sys
 import numpy as np
 import io
 import base64
@@ -126,6 +124,6 @@ def get_dominant_color_space(image):
 
 def get_dominant_hue_and_saturation(image):
     r, g, b = get_dominant_color_space(image)[::-1]
-    h, s, v = colorsys.rgb_to_hsv(round(r) / 255, round(g) / 255, round(b) / 255)
+    h, s, _ = colorsys.rgb_to_hsv(round(r) / 255, round(g) / 255, round(b) / 255)
 
     return round(h * 255, 2), round(s * 255, 2)
