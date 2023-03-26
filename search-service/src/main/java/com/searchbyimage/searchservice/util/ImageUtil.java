@@ -32,6 +32,10 @@ public class ImageUtil {
         return fileName;
     }
 
+    public File getImageFileForDownload(String filename) {
+        return new File(Paths.get(DATA_DIR_PATH + File.separator + filename).toString());
+    }
+
     public void deleteLocallySavedImage(String fileName) throws IllegalStateException, IOException {
         var path = Paths.get(DATA_DIR_PATH + File.separator + fileName);
         Files.delete(path);
