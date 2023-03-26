@@ -1,6 +1,7 @@
 from model import RawImage, ProcessedImageData
 from processing_service import load_classes, format_yolov5, load_image, detect, wrap_detection, get_dominant_hue_and_saturation
 
+
 def handle_image_processing_request(image: RawImage, ml_model) -> ProcessedImageData:
     class_list = load_classes()
     image = load_image(image.b64_image)
