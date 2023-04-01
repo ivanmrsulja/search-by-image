@@ -1,14 +1,13 @@
 package com.searchbyimage.searchservice.util;
 
-import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class ImageUtil {
@@ -22,7 +21,7 @@ public class ImageUtil {
 
     public String saveImageLocally(MultipartFile image) throws IllegalStateException, IOException {
         var fileName = "";
-        if (! image.isEmpty()) {
+        if (!image.isEmpty()) {
             fileName = UUID.randomUUID() + ".jpg";
             var bytes = image.getBytes();
             var path = Paths.get(DATA_DIR_PATH + File.separator + fileName);

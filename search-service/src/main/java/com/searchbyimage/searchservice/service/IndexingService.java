@@ -1,17 +1,16 @@
 package com.searchbyimage.searchservice.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.searchbyimage.searchservice.client.ImageProcessingClient;
 import com.searchbyimage.searchservice.dto.ImageUploadDTO;
 import com.searchbyimage.searchservice.dto.ProcessedImageDataDTO;
 import com.searchbyimage.searchservice.dto.RawImageDTO;
-import com.searchbyimage.searchservice.elasticsearchrepository.ImageRepository;
 import com.searchbyimage.searchservice.exception.ImageProcessingFailedException;
 import com.searchbyimage.searchservice.model.Image;
 import com.searchbyimage.searchservice.util.ImageUtil;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +20,7 @@ public class IndexingService {
 
     private final ImageUtil imageUtil;
 
-    private final ImageRepository imageRepository;
+    private final ElasticsearchClient elasticsearchClient;
 
     public void indexImage(ImageUploadDTO imageUpload) throws IOException {
         var fileName = imageUtil.saveImageLocally(imageUpload.getImage());
@@ -33,13 +32,14 @@ public class IndexingService {
             processedImageData = imageProcessingClient.processImage(new RawImageDTO(base64Image));
         } catch (Exception e) {
             imageUtil.deleteLocallySavedImage(fileName);
-            throw new ImageProcessingFailedException("Something went wrong when trying to process image.");
+            throw new ImageProcessingFailedException(
+                "Something went wrong when trying to process image.");
         }
 
         var image = new Image();
 
         StringBuilder tags = new StringBuilder();
-        for (var tag: processedImageData.getClasses()) {
+        for (var tag : processedImageData.getClasses()) {
             tags.append(tag).append(" ");
         }
 
@@ -48,6 +48,10 @@ public class IndexingService {
         image.setHue(processedImageData.getHsvColorSpace()[0]);
         image.setSaturation(processedImageData.getHsvColorSpace()[1]);
 
-        imageRepository.save(image);
+        elasticsearchClient.index(i -> i
+            .index("images")
+            .id(image.getId())
+            .document(image)
+        );
     }
 }

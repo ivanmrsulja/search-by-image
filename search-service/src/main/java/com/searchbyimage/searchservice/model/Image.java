@@ -28,6 +28,6 @@ public class Image {
     @Field(type = FieldType.Double, store = true, name = "saturation")
     private Double saturation;
 
-    @Field(type = FieldType.Text, store = true, name = "file_name")
+    @Field(type = FieldType.Text, store = true, name = "fileName")
     private String fileName;
 }

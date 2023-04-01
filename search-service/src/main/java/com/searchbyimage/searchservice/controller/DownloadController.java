@@ -1,6 +1,8 @@
 package com.searchbyimage.searchservice.controller;
 
 import com.searchbyimage.searchservice.util.ImageUtil;
+import java.io.FileInputStream;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -11,9 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.FileInputStream;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("api/download")
