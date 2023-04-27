@@ -12,7 +12,8 @@
                     filled
                     show-size
                     prepend-icon="mdi-camera"
-                    v-model="files"></v-file-input>
+                    v-model="files"
+                    @change="onFileSelected"></v-file-input>
             </v-col>
             <v-col sm="1" cols="4">
                 <v-checkbox
@@ -26,6 +27,16 @@
                     @click="searchImages()">
                     Search
                 </v-btn>
+            </v-col>
+        </v-row>
+        <v-row justify="center">
+            <div v-if="imageUrl" class="upload-preview">
+                <img :src="imageUrl" alt="Uploaded Image" />
+            </div>
+        </v-row>
+        <v-row justify="center" v-if="results.length > 0">
+            <v-col cols="6" md="6" class="header-col">
+                <h1>Results for given sample image</h1>
             </v-col>
         </v-row>
         <v-row cols="12">
@@ -68,6 +79,15 @@
             const files = ref([]);
             const useColorSpace = ref(false);
 
+            const imageUrl = ref(null);
+            const selectedFile = ref(null);
+
+            const onFileSelected = (event) => {
+                selectedFile.value = event.target.files[0];
+                imageUrl.value = URL.createObjectURL(selectedFile.value);
+                results.value = [];
+            };
+
             const searchImages = () => {
                 if (files.value) {
                     let formData = new FormData();
@@ -88,7 +108,17 @@
                 }
             };
 
-            return { results, files, useColorSpace, searchImages };
+            return {
+                results,
+                files,
+                useColorSpace,
+                imageUrl,
+                searchImages,
+                onFileSelected,
+            };
+        },
+        beforeUnmount() {
+            URL.revokeObjectURL(this.imageUrl);
         },
     };
 </script>
@@ -97,5 +127,19 @@
     .header-col {
         text-align: center;
         margin-bottom: 2%;
+    }
+
+    .upload-preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .upload-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
     }
 </style>

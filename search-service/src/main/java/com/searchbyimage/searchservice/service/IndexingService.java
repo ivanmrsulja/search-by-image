@@ -2,7 +2,6 @@ package com.searchbyimage.searchservice.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.searchbyimage.searchservice.client.ImageProcessingClient;
-import com.searchbyimage.searchservice.dto.ImageUploadDTO;
 import com.searchbyimage.searchservice.dto.ProcessedImageDataDTO;
 import com.searchbyimage.searchservice.dto.RawImageDTO;
 import com.searchbyimage.searchservice.exception.ImageProcessingFailedException;
@@ -11,6 +10,7 @@ import com.searchbyimage.searchservice.util.ImageUtil;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +22,10 @@ public class IndexingService {
 
     private final ElasticsearchClient elasticsearchClient;
 
-    public void indexImage(ImageUploadDTO imageUpload) throws IOException {
-        var fileName = imageUtil.saveImageLocally(imageUpload.getImage());
+    public void indexImage(MultipartFile imageUpload) throws IOException {
+        var fileName = imageUtil.saveImageLocally(imageUpload);
 
-        var base64Image = imageUtil.multipartImageToBase64(imageUpload.getImage());
+        var base64Image = imageUtil.multipartImageToBase64(imageUpload);
 
         ProcessedImageDataDTO processedImageData = new ProcessedImageDataDTO();
         try {

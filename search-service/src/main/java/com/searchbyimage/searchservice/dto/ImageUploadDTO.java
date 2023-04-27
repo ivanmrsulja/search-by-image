@@ -1,5 +1,6 @@
 package com.searchbyimage.searchservice.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +13,5 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class ImageUploadDTO {
 
-    private MultipartFile image;
+    private List<MultipartFile> images;
 }

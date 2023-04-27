@@ -11,6 +11,7 @@
                     label="File input"
                     filled
                     show-size
+                    multiple
                     prepend-icon="mdi-camera"
                     v-model="files"></v-file-input>
             </v-col>
@@ -51,7 +52,9 @@
                 if (files.value) {
                     let formData = new FormData();
 
-                    formData.append("image", files.value[0]);
+                    for (let i = 0; i < files.value.length; i++) {
+                        formData.append("images[]", files.value[i]);
+                    }
 
                     indexService
                         .indexImage(formData)

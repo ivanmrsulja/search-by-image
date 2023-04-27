@@ -20,7 +20,9 @@ public class IndexController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void indexImage(ImageUploadDTO imageUpload) throws IOException {
-        indexingService.indexImage(imageUpload);
+    public void indexImage(ImageUploadDTO imagesUpload) throws IOException {
+        for (var image : imagesUpload.getImages()) {
+            indexingService.indexImage(image);
+        }
     }
 }

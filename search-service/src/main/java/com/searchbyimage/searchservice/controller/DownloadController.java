@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,9 +29,9 @@ public class DownloadController {
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=download.pdf")
-                .contentLength(file.length())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=download.pdf")
+            .contentLength(file.length())
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(resource);
     }
 }
