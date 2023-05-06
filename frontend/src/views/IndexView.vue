@@ -5,25 +5,7 @@
                 <h1>Upload an image</h1>
             </v-col>
         </v-row>
-        <v-row>
-            <v-col sm="11" cols="9">
-                <v-file-input
-                    label="File input"
-                    filled
-                    show-size
-                    multiple
-                    prepend-icon="mdi-camera"
-                    v-model="files"></v-file-input>
-            </v-col>
-            <v-col sm="1" cols="3">
-                <v-btn
-                    style="margin-top: 10px"
-                    variant="tonal"
-                    @click="indexImage()">
-                    Upload
-                </v-btn>
-            </v-col>
-        </v-row>
+        <index-bar></index-bar>
         <v-row v-if="success">
             <v-col cols="12" class="success-msg">
                 <h1>Indexed Successfully!</h1>
@@ -39,38 +21,27 @@
 
 <script>
     import { ref } from "vue";
-    import { indexService } from "../service/indexService";
+    import IndexBar from "@/components/index/IndexBar.vue";
+    import { provide } from "vue";
 
     export default {
-        name: "navbar",
+        name: "index-view",
+        components: { IndexBar },
         setup() {
-            const files = ref([]);
             const success = ref(false);
             const error = ref(false);
 
-            const indexImage = () => {
-                if (files.value) {
-                    let formData = new FormData();
-
-                    for (let i = 0; i < files.value.length; i++) {
-                        formData.append("images[]", files.value[i]);
-                    }
-
-                    indexService
-                        .indexImage(formData)
-                        .then((response) => {
-                            success.value = true;
-                            files.value = [];
-                        })
-                        .catch((error) => {
-                            error.value = true;
-                        });
+            const successCallback = (ok) => {
+                if (ok) {
+                    success.value = true;
                 } else {
-                    console.log("There are no files.");
+                    error.value = true;
                 }
             };
 
-            return { files, success, error, indexImage };
+            provide("successCallback", successCallback);
+
+            return { success, error };
         },
     };
 </script>
