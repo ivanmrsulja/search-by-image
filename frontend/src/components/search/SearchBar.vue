@@ -39,6 +39,7 @@
         name: "search-bar",
         setup() {
             const resultsCallback = inject("resultsCallback");
+            const startSearchCallback = inject("startSearchCallback");
             const files = ref([]);
             const useColorSpace = ref(false);
 
@@ -56,6 +57,7 @@
 
             const searchImages = () => {
                 if (files.value) {
+                    startSearchCallback();
                     let formData = new FormData();
 
                     formData.append("image", files.value[0]);
@@ -69,8 +71,6 @@
                         .catch((error) => {
                             console.log(error);
                         });
-                } else {
-                    console.log("There are no files.");
                 }
             };
 

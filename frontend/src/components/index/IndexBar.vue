@@ -29,9 +29,11 @@
         setup() {
             const files = ref([]);
             const successCallback = inject("successCallback");
+            const startIndexCallback = inject("startIndexCallback");
 
             const indexImage = () => {
                 if (files.value) {
+                    startIndexCallback();
                     let formData = new FormData();
 
                     for (let i = 0; i < files.value.length; i++) {
@@ -47,8 +49,6 @@
                         .catch((err) => {
                             successCallback(false);
                         });
-                } else {
-                    console.log("There are no files.");
                 }
             };
 

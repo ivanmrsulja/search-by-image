@@ -6,6 +6,11 @@
             </v-col>
         </v-row>
         <search-bar></search-bar>
+        <v-row v-if="loading">
+            <v-col cols="12" style="text-align: center">
+                <v-progress-circular :size="50" color="primary" indeterminate />
+            </v-col>
+        </v-row>
         <search-results :results="results"></search-results>
     </v-container>
 </template>
@@ -21,15 +26,23 @@
         components: { SearchBar, SearchResults },
         setup() {
             const results = ref([]);
+            const loading = ref(false);
 
             const resultsCallback = (searchResults) => {
                 results.value = searchResults;
+                loading.value = false;
+            };
+
+            const startSearchCallback = () => {
+                loading.value = true;
             };
 
             provide("resultsCallback", resultsCallback);
+            provide("startSearchCallback", startSearchCallback);
 
             return {
                 results,
+                loading,
             };
         },
     };

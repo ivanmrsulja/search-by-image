@@ -6,6 +6,11 @@
             </v-col>
         </v-row>
         <index-bar></index-bar>
+        <v-row v-if="loading">
+            <v-col cols="12" style="text-align: center">
+                <v-progress-circular :size="50" color="primary" indeterminate />
+            </v-col>
+        </v-row>
         <v-row v-if="success">
             <v-col cols="12" class="success-msg">
                 <h1>Indexed Successfully!</h1>
@@ -30,18 +35,28 @@
         setup() {
             const success = ref(false);
             const error = ref(false);
+            const loading = ref(false);
 
             const successCallback = (ok) => {
                 if (ok) {
                     success.value = true;
+                    error.value = false;
                 } else {
+                    success.value = false;
                     error.value = true;
                 }
+
+                loading.value = false;
+            };
+
+            const startIndexCallback = () => {
+                loading.value = true;
             };
 
             provide("successCallback", successCallback);
+            provide("startIndexCallback", startIndexCallback);
 
-            return { success, error };
+            return { success, error, loading };
         },
     };
 </script>
