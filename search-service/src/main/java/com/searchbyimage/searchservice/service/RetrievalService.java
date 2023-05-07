@@ -11,6 +11,7 @@ import com.searchbyimage.searchservice.util.ImageUtil;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
@@ -33,17 +34,24 @@ public class RetrievalService {
 
     private final ImageProcessingClient imageProcessingClient;
 
+    private final CacheService cacheService;
+
     public Page<ImageDisplayDTO> searchForImage(SearchRequestDTO sampleImageUpload,
                                                 Pageable pageable)
         throws IOException {
         var base64Image = imageUtil.multipartImageToBase64(sampleImageUpload.getImage());
+        var imageHash = DigestUtils.md5Hex(base64Image).toUpperCase();
 
-        ProcessedImageDataDTO processedImageData = new ProcessedImageDataDTO();
-        try {
-            processedImageData = imageProcessingClient.processImage(new RawImageDTO(base64Image));
-        } catch (Exception e) {
-            throw new ImageProcessingFailedException(
-                "Something went wrong when trying to process image.");
+        ProcessedImageDataDTO processedImageData = cacheService.retrieveCached(imageHash);
+        if (processedImageData == null) {
+            try {
+                processedImageData =
+                    imageProcessingClient.processImage(new RawImageDTO(base64Image));
+                cacheService.cache(processedImageData, imageHash);
+            } catch (Exception e) {
+                throw new ImageProcessingFailedException(
+                    "Something went wrong when trying to process image.");
+            }
         }
 
         var queryBuilder = buildQuery(processedImageData.getClasses());

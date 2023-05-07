@@ -27,13 +27,36 @@
             </v-card-actions>
         </v-card>
     </v-row>
+    <v-row style="margin-top: 50px" v-if="results.length > 0">
+        <v-col cols="12">
+            <v-pagination
+                :length="pages"
+                v-model="page"
+                @click="changePage"></v-pagination>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
+    import { ref } from "vue";
+    import { inject } from "vue";
+
     export default {
         name: "search-results",
-        props: ["results"],
-        setup() {},
+        props: ["results", "pages"],
+        setup() {
+            const page = ref(1);
+            const searchCallback = inject("searchCallback");
+
+            const changePage = () => {
+                searchCallback(null, page.value - 1);
+            };
+
+            return {
+                page,
+                changePage,
+            };
+        },
     };
 </script>
 

@@ -11,7 +11,7 @@
                 <v-progress-circular :size="50" color="primary" indeterminate />
             </v-col>
         </v-row>
-        <search-results :results="results"></search-results>
+        <search-results :results="results" :pages="pages"></search-results>
     </v-container>
 </template>
 
@@ -19,6 +19,7 @@
     import { ref } from "vue";
     import SearchBar from "@/components/search/SearchBar.vue";
     import SearchResults from "@/components/search/SearchResults.vue";
+    import { searchService } from "../service/searchService";
     import { provide } from "vue";
 
     export default {
@@ -27,22 +28,44 @@
         setup() {
             const results = ref([]);
             const loading = ref(false);
+            const cachedFormData = ref(null);
+            const pages = ref(0);
+            const RESULTS_PER_PAGE = 5;
 
-            const resultsCallback = (searchResults) => {
+            const clearResultsCallback = (searchResults) => {
                 results.value = searchResults;
-                loading.value = false;
             };
 
             const startSearchCallback = () => {
                 loading.value = true;
             };
 
-            provide("resultsCallback", resultsCallback);
+            const searchCallback = (formData, page) => {
+                if (formData === null) {
+                    formData = cachedFormData.value;
+                }
+                searchService
+                    .searchImages(formData, page, RESULTS_PER_PAGE)
+                    .then((response) => {
+                        cachedFormData.value = formData;
+                        results.value = response.data.content;
+                        pages.value = response.data.totalPages;
+                        loading.value = false;
+                        resultsCallback();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            };
+
+            provide("searchCallback", searchCallback);
+            provide("clearResultsCallback", clearResultsCallback);
             provide("startSearchCallback", startSearchCallback);
 
             return {
                 results,
                 loading,
+                pages,
             };
         },
     };

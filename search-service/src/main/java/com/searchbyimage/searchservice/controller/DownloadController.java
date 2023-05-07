@@ -23,7 +23,6 @@ public class DownloadController {
 
     @GetMapping("/{fileName}")
     public ResponseEntity<Resource> download(@PathVariable String fileName) throws IOException {
-
         var file = imageUtil.getImageFileForDownload(fileName);
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));

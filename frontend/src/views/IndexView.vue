@@ -38,14 +38,8 @@
             const loading = ref(false);
 
             const successCallback = (ok) => {
-                if (ok) {
-                    success.value = true;
-                    error.value = false;
-                } else {
-                    success.value = false;
-                    error.value = true;
-                }
-
+                success.value = ok;
+                error.value = !ok;
                 loading.value = false;
             };
 

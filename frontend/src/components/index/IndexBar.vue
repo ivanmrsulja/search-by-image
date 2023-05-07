@@ -32,24 +32,26 @@
             const startIndexCallback = inject("startIndexCallback");
 
             const indexImage = () => {
-                if (files.value) {
-                    startIndexCallback();
-                    let formData = new FormData();
-
-                    for (let i = 0; i < files.value.length; i++) {
-                        formData.append("images[]", files.value[i]);
-                    }
-
-                    indexService
-                        .indexImage(formData)
-                        .then((response) => {
-                            successCallback(true);
-                            files.value = [];
-                        })
-                        .catch((err) => {
-                            successCallback(false);
-                        });
+                if (!files.value) {
+                    return;
                 }
+
+                startIndexCallback();
+
+                let formData = new FormData();
+                for (let i = 0; i < files.value.length; i++) {
+                    formData.append("images[]", files.value[i]);
+                }
+
+                indexService
+                    .indexImage(formData)
+                    .then((response) => {
+                        successCallback(true);
+                        files.value = [];
+                    })
+                    .catch((err) => {
+                        successCallback(false);
+                    });
             };
 
             return { files, indexImage };

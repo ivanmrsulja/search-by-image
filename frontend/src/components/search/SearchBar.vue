@@ -32,13 +32,14 @@
 
 <script>
     import { ref } from "vue";
-    import { searchService } from "../../service/searchService";
+
     import { inject } from "vue";
 
     export default {
         name: "search-bar",
         setup() {
-            const resultsCallback = inject("resultsCallback");
+            const searchCallback = inject("searchCallback");
+            const clearResultsCallback = inject("clearResultsCallback");
             const startSearchCallback = inject("startSearchCallback");
             const files = ref([]);
             const useColorSpace = ref(false);
@@ -52,26 +53,21 @@
                 }
                 selectedFile.value = event.target.files[0];
                 imageUrl.value = URL.createObjectURL(selectedFile.value);
-                resultsCallback([]);
+                clearResultsCallback([]);
             };
 
             const searchImages = () => {
-                if (files.value) {
-                    startSearchCallback();
-                    let formData = new FormData();
-
-                    formData.append("image", files.value[0]);
-                    formData.append("hsvSort", useColorSpace.value);
-
-                    searchService
-                        .searchImages(formData, 0, 10)
-                        .then((response) => {
-                            resultsCallback(response.data.content);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
+                if (!files.value) {
+                    return;
                 }
+
+                startSearchCallback();
+
+                let formData = new FormData();
+                formData.append("image", files.value[0]);
+                formData.append("hsvSort", useColorSpace.value);
+
+                searchCallback(formData, 0);
             };
 
             return {
