@@ -1,0 +1,86 @@
+version: "3"
+
+services:
+    image-processing-service:
+        container_name: image-processing-service
+        build:
+            context: ./image-processing-service
+            dockerfile: Dockerfile
+        ports:
+            - 8000:8000
+        networks:
+            - search-by-image
+
+    frontend:
+        container_name: frontend
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - 80:80
+        networks:
+            - search-by-image
+
+    search-service:
+        container_name: search-service
+        build:
+            context: ./search-service
+            dockerfile: Dockerfile
+        environment:
+            - ES_HOST=elasticsearch
+            - ES_PORT=9200
+            - ES_USERNAME=
+            - ES_PASSWORD=
+            - REDIS_HOST=redis
+            - IMPR_HOST=image-processing-service
+        ports:
+            - 8081:8081
+        depends_on:
+            - elasticsearch
+            - redis
+        networks:
+            - search-by-image
+
+    redis:
+        container_name: image-redis
+        image: redis:latest
+        ports:
+            - 6379:6379
+        networks:
+            - search-by-image
+        volumes:
+            - redis-data:/data
+
+    elasticsearch:
+        container_name: image-elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+        ports:
+            - 9200:9200
+            - 9300:9300
+        environment:
+            - discovery.type=single-node
+            - ES_JAVA_OPTS=-Xms1g -Xmx1g
+            - xpack.security.enabled=false
+        networks:
+            - search-by-image
+        restart: always
+        volumes:
+            - elasticsearch-data:/usr/share/elasticsearch/data
+
+    kibana:
+        container_name: image-kibana
+        image: docker.elastic.co/kibana/kibana:8.4.3
+        ports:
+            - 5601:5601
+        depends_on:
+            - elasticsearch
+        networks:
+            - search-by-image
+        restart: always
+
+networks:
+    search-by-image:
+
+volumes:
+    redis-data:
+    elasticsearch-data:

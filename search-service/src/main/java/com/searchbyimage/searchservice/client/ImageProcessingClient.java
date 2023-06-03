@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-@FeignClient(name = "image-processing-client", url = "http://127.0.0.1:8000")
+@FeignClient(name = "image-processing-client", url = "http://${image-processing-service.host}:8000")
 public interface ImageProcessingClient {
 
     @PostMapping("/preprocess")
