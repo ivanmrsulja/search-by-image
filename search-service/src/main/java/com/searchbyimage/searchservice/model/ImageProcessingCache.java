@@ -11,7 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-@RedisHash("image")
+@RedisHash(value = "image", timeToLive = 300)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,6 +27,4 @@ public class ImageProcessingCache implements Serializable {
     private List<String> tags;
 
     private Double[] hsvColorSpace;
-
-    private LocalDateTime timestamp;
 }

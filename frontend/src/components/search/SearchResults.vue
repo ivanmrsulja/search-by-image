@@ -18,12 +18,10 @@
                 cover>
             </v-img>
 
-            <v-card-text>
-                <div>{{ result.fileName }}</div>
-            </v-card-text>
-
-            <v-card-actions>
-                <v-btn color="orange"> Download </v-btn>
+            <v-card-actions class="justify-center">
+                <v-btn color="orange" @click="downloadImage(result.fileName)">
+                    Download
+                </v-btn>
             </v-card-actions>
         </v-card>
     </v-row>
@@ -40,6 +38,7 @@
 <script>
     import { ref } from "vue";
     import { inject } from "vue";
+    import { imageService } from "@/service/imageService";
 
     export default {
         name: "search-results",
@@ -52,9 +51,14 @@
                 searchCallback(null, page.value - 1);
             };
 
+            const downloadImage = (filename) => {
+                imageService.downloadImage(filename);
+            };
+
             return {
                 page,
                 changePage,
+                downloadImage,
             };
         },
     };

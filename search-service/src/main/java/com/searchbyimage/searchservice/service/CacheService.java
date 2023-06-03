@@ -39,17 +39,6 @@ public class CacheService {
         cacheData.setTags(imageData.getClasses());
         cacheData.setHsvColorSpace(imageData.getHsvColorSpace());
         cacheData.setImageHash(imageHash);
-        cacheData.setTimestamp(LocalDateTime.now());
         imageProcessingCacheRepository.save(cacheData);
-    }
-
-    @Scheduled(cron = "0 */5 * ? * *")
-    public void clearCache() {
-        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minus(5, ChronoUnit.MINUTES);
-        for (var cache : imageProcessingCacheRepository.findAll()) {
-            if (cache.getTimestamp().isBefore(fiveMinutesAgo)) {
-                imageProcessingCacheRepository.delete(cache);
-            }
-        }
     }
 }
