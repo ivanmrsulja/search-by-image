@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "elasticsearchIndexClient", url = "http://localhost:9200")
+@FeignClient(value = "elasticsearchIndexClient", url = "http://${elasticsearch.host}:9200")
 public interface ElasticsearchIndexClient {
 
     @PostMapping("/applications/_close")

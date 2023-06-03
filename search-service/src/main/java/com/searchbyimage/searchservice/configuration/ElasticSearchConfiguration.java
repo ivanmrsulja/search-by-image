@@ -28,7 +28,7 @@ public class ElasticSearchConfiguration {
     @Value("${elasticsearch.port}")
     private int port;
 
-    @Value("${elasticsearch.username}")
+    @Value("${elasticsearch.userName}")
     private String userName;
 
     @Value("${elasticsearch.password}")
