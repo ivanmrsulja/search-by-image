@@ -1,5 +1,7 @@
 package com.searchbyimage.searchservice.model;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +16,7 @@ import org.springframework.data.redis.core.index.Indexed;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageProcessingCache {
+public class ImageProcessingCache implements Serializable {
 
     @Id
     private String id;
@@ -25,4 +27,6 @@ public class ImageProcessingCache {
     private List<String> tags;
 
     private Double[] hsvColorSpace;
+
+    private LocalDateTime timestamp;
 }

@@ -3,6 +3,8 @@ package com.searchbyimage.searchservice.service;
 import com.searchbyimage.searchservice.dto.ProcessedImageDataDTO;
 import com.searchbyimage.searchservice.model.ImageProcessingCache;
 import com.searchbyimage.searchservice.redisrepository.ImageProcessingCacheRepository;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
@@ -37,11 +39,17 @@ public class CacheService {
         cacheData.setTags(imageData.getClasses());
         cacheData.setHsvColorSpace(imageData.getHsvColorSpace());
         cacheData.setImageHash(imageHash);
+        cacheData.setTimestamp(LocalDateTime.now());
         imageProcessingCacheRepository.save(cacheData);
     }
 
     @Scheduled(cron = "0 */5 * ? * *")
     public void clearCache() {
-        imageProcessingCacheRepository.deleteAll();
+        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minus(5, ChronoUnit.MINUTES);
+        for (var cache : imageProcessingCacheRepository.findAll()) {
+            if (cache.getTimestamp().isBefore(fiveMinutesAgo)) {
+                imageProcessingCacheRepository.delete(cache);
+            }
+        }
     }
 }
