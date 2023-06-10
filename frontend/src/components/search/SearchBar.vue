@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col sm="10" cols="6">
+        <v-col sm="11" cols="10">
             <v-file-input
                 label="File input"
                 filled
@@ -9,11 +9,6 @@
                 v-model="files"
                 @change="onFileSelected"></v-file-input>
         </v-col>
-        <v-col sm="1" cols="4">
-            <v-checkbox
-                label="Sort by color space"
-                v-model="useColorSpace"></v-checkbox>
-        </v-col>
         <v-col sm="1" cols="2">
             <v-btn
                 style="margin-top: 10px"
@@ -21,6 +16,13 @@
                 @click="searchImages()">
                 Search
             </v-btn>
+        </v-col>
+    </v-row>
+    <v-row style="margin-top: -50px; margin-left: -21px">
+        <v-col cols="12">
+            <v-checkbox
+                label="Sort by color space"
+                v-model="useColorSpace"></v-checkbox>
         </v-col>
     </v-row>
     <v-row justify="center">

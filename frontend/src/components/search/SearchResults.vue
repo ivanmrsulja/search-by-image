@@ -1,6 +1,6 @@
 <template>
     <v-row justify="center" v-if="results.length > 0">
-        <v-col cols="6" md="6" class="header-col">
+        <v-col cols="12" md="6" class="header-col">
             <h1>Results for given sample image</h1>
         </v-col>
     </v-row>
