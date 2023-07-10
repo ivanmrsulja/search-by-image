@@ -36,6 +36,7 @@ public class RetrievalService {
 
     private final CacheService cacheService;
 
+
     public Page<ImageDisplayDTO> searchForImage(SearchRequestDTO sampleImageUpload,
                                                 Pageable pageable)
         throws IOException {

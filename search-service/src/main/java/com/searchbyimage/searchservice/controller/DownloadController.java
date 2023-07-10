@@ -1,6 +1,6 @@
 package com.searchbyimage.searchservice.controller;
 
-import com.searchbyimage.searchservice.util.ImageUtil;
+import com.searchbyimage.searchservice.service.ImageService;
 import java.io.FileInputStream;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class DownloadController {
 
-    private final ImageUtil imageUtil;
+    private final ImageService imageService;
 
     @GetMapping("/{fileName}")
     public ResponseEntity<Resource> download(@PathVariable String fileName) throws IOException {
-        var file = imageUtil.getImageFileForDownload(fileName);
+        var file = imageService.getImageFileForDownload(fileName);
 
         InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 

@@ -1,7 +1,6 @@
 package com.searchbyimage.searchservice.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

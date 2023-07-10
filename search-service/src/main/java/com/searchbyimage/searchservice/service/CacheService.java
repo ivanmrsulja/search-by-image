@@ -3,13 +3,10 @@ package com.searchbyimage.searchservice.service;
 import com.searchbyimage.searchservice.dto.ProcessedImageDataDTO;
 import com.searchbyimage.searchservice.model.ImageProcessingCache;
 import com.searchbyimage.searchservice.redisrepository.ImageProcessingCacheRepository;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -7,7 +7,6 @@ import com.searchbyimage.searchservice.dto.RawImageDTO;
 import com.searchbyimage.searchservice.exception.ImageProcessingFailedException;
 import com.searchbyimage.searchservice.model.Image;
 import com.searchbyimage.searchservice.util.ImageUtil;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,10 +19,12 @@ public class IndexingService {
 
     private final ImageUtil imageUtil;
 
+    private final ImageService imageService;
+
     private final ElasticsearchClient elasticsearchClient;
 
-    public void indexImage(MultipartFile imageUpload) throws IOException {
-        var fileName = imageUtil.saveImageLocally(imageUpload);
+    public void indexImage(MultipartFile imageUpload) throws Exception {
+        var fileName = imageService.saveImage(imageUpload);
 
         var base64Image = imageUtil.multipartImageToBase64(imageUpload);
 
@@ -31,7 +32,7 @@ public class IndexingService {
         try {
             processedImageData = imageProcessingClient.processImage(new RawImageDTO(base64Image));
         } catch (Exception e) {
-            imageUtil.deleteLocallySavedImage(fileName);
+            imageService.deleteSavedImage(fileName);
             throw new ImageProcessingFailedException(
                 "Something went wrong when trying to process image.");
         }
